@@ -1,0 +1,27 @@
+{
+    "team_number": "T0052",
+    "group_lead": {
+        "name": "Divyansh Chaudhary",
+        "enrollment_no": "2501010153",
+        "github": "https://github.com/divyansh-x-codes"
+    },
+    "members": [
+        {
+            "name": "Manav Manav",
+            "enrollment_no": "2501010257",
+            "github": "https://github.com/manavsharma2704"
+        },
+        {
+            "name": "Vishal Maurya",
+            "enrollment_no": "2501010513",
+            "github": "https://github.com/vishal02011"
+        },
+        {
+            "name": "Mohit Choudhary",
+            "enrollment_no": "2501010278",
+            "github": "https://github.com/mohit-gt-stack"
+        }
+    ],
+    "postgres_version": "15 or newer",
+    "laptop_used_for_benchmarks": "Apple MacBook Pro"
+}
