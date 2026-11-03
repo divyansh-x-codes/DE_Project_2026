@@ -18,18 +18,20 @@
 
 ---
 
-## Team details (fill in before you start)
+
+## Team details
+
+- Team Number: T0052
+- Section: A
+- DE Repository: https://github.com/divyansh-x-codes/DE_Project_2026
 
 | Role | Name | Enrollment No. | GitHub Username |
-|------|------|----------------|-----------------|
-| Group Lead | | | |
-| Member 2 | | | |
-| Member 3 | | | |
-| Member 4 | | | |
+|---|---|---|---|
+| Group Lead | Divyansh Chaudhary | 2501010153 | divyansh-x-codes |
+| Member 2 | Manav Manav | 2501010257 | manavsharma2704 |
+| Member 3 | Vishal Maurya | 2501010513 | vishal02011 |
+| Member 4 | Mohit Choudhary | 2501010278 | mohit-gt-stack |
 
-**Team No.:** ____ · **Section:** ____ · **Repository URL:** ____
-
----
 
 ## How this project works
 
@@ -765,3 +767,4 @@ WHERE movie_id = 2
   AND starts_at >= '2026-07-01'
   AND EXTRACT(ISODOW FROM starts_at) IN (6, 7);
 ```
+# DE_Project_2026
