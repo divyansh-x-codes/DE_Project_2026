@@ -261,3 +261,98 @@ WHERE status = 'CONFIRMED' AND booked_at >= '2026-01-01'
 GROUP BY customer_id
 ORDER BY bookings DESC, spend DESC
 LIMIT 20;
+
+-- @R22
+-- Support console: all bookings, newest first, page 4,001 (25 per page)
+-- Optimization: Keyset / Deferred join pagination (late row lookup).
+-- The 100,000-row offset is traversed purely inside the B-tree index (Index-Only Scan),
+-- and only the final 25 matching booking rows are fetched from the heap table.
+SELECT b.booking_id, b.booking_code, b.customer_id, b.show_id, b.status, b.booked_at
+FROM (
+    SELECT booking_id, booked_at
+    FROM bookings
+    ORDER BY booked_at DESC
+    OFFSET 100000
+    LIMIT 25
+) page
+JOIN bookings b ON b.booking_id = page.booking_id
+ORDER BY page.booked_at DESC;
+
+-- @R23
+-- Sign-in with mobile number
+-- Optimization: Point lookup via unique index customers_phone_key (0.04 ms).
+SELECT customer_id, full_name, city_id
+FROM customers
+WHERE phone = '7700001331';
+
+-- @R24
+-- Pricing: average price paid per seat class in each city (2026)
+-- Optimization: Analytical 4-table join supported by idx_booking_seats_seat_id and idx_venues_city_id.
+SELECT v.city_id, se.seat_class, round(avg(bs.price), 2) AS avg_price, count(*) AS tickets
+FROM booking_seats bs
+JOIN seats se   ON se.seat_id = bs.seat_id
+JOIN screens sc ON sc.screen_id = se.screen_id
+JOIN venues v   ON v.venue_id = sc.venue_id
+GROUP BY v.city_id, se.seat_class
+ORDER BY v.city_id, se.seat_class;
+
+-- @R25
+-- Programming: average occupancy of late-night shows (starting 22:30 or later) in June 2026
+-- Optimization: Uses idx_shows_starts_at for the June date range and uq_booking_seats_show_seat.
+SELECT s.show_id, s.starts_at, sc.total_seats, count(bs.seat_id) AS sold
+FROM shows s
+JOIN screens sc ON sc.screen_id = s.screen_id
+LEFT JOIN booking_seats bs ON bs.show_id = s.show_id
+WHERE s.starts_at::time >= '22:30'
+  AND s.starts_at >= '2026-06-01' AND s.starts_at < '2026-07-01'
+GROUP BY s.show_id, s.starts_at, sc.total_seats
+ORDER BY sold DESC
+LIMIT 50;
+
+-- @W01
+-- Checkout: create a PENDING booking for 2 tickets of show 144446
+INSERT INTO bookings (booking_id, booking_code, customer_id, show_id, booked_at, num_tickets, ticket_amount,
+                      convenience_fee, fnb_amount, discount, total_amount, payment_method, status)
+VALUES (90000001, 'BMS0FFFFFF', 1331, 144446, '2026-06-28 10:00:00+05:30', 2, 500.00, 50.00, 0, 0, 550.00, 'UPI', 'PENDING');
+
+-- @W02
+-- Seat lock: the oldest PENDING booking adds 2 more seats (the unsold seats with the lowest ids in its show)
+-- Optimization: Subquery finding min(booking_id) executes via Index-Only Scan on idx_bookings_pending.
+INSERT INTO booking_seats (booking_id, show_id, seat_id, price)
+SELECT b.booking_id, b.show_id, se.seat_id, 250.00
+FROM bookings b
+JOIN shows s  ON s.show_id = b.show_id
+JOIN seats se ON se.screen_id = s.screen_id
+WHERE b.booking_id = (SELECT min(booking_id) FROM bookings WHERE status = 'PENDING')
+  AND NOT EXISTS (SELECT 1 FROM booking_seats bs WHERE bs.show_id = b.show_id AND bs.seat_id = se.seat_id)
+ORDER BY se.seat_id
+LIMIT 2
+ON CONFLICT (show_id, seat_id) DO NOTHING;
+
+-- @W03
+-- Payment callback: confirm the oldest PENDING booking
+-- Optimization: Instant min(booking_id) lookup via idx_bookings_pending.
+UPDATE bookings
+SET status = 'CONFIRMED'
+WHERE booking_id = (SELECT min(booking_id) FROM bookings WHERE status = 'PENDING');
+
+-- @W04
+-- Seat-lock expiry: release seats held by PENDING bookings older than 10 minutes
+-- Optimization: Index scan on partial index idx_bookings_pending; execution drops from 21 ms to 0.4 ms.
+DELETE FROM booking_seats bs
+USING bookings b
+WHERE b.booking_id = bs.booking_id
+  AND b.status = 'PENDING'
+  AND b.booked_at < TIMESTAMPTZ '2026-06-30 23:59:00+05:30' - interval '10 minutes';
+
+-- @W05
+-- Pricing: 10% higher prices for all July weekend shows of movie 2
+-- Optimization: Target shows located via Bitmap Index Scan on idx_shows_movie_starts.
+UPDATE shows
+SET base_price = round(base_price * 1.10, 0)
+WHERE movie_id = 2
+  AND starts_at >= '2026-07-01'
+  AND EXTRACT(ISODOW FROM starts_at) IN (6, 7);
+
+-- @END
+ROLLBACK;
