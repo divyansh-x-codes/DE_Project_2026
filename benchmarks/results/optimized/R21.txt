@@ -1,0 +1,54 @@
+=== R21 run 1 ===
+Limit  (cost=6410.52..6410.57 rows=20 width=44) (actual time=17.471..17.473 rows=20.00 loops=1)
+  Buffers: shared hit=72 read=514
+  ->  Sort  (cost=6410.52..6495.10 rows=33832 width=44) (actual time=17.471..17.471 rows=20.00 loops=1)
+        Sort Key: (count(*)) DESC, (sum(total_amount)) DESC
+        Sort Method: top-N heapsort  Memory: 27kB
+        Buffers: shared hit=72 read=514
+        ->  GroupAggregate  (cost=0.42..5510.26 rows=33832 width=44) (actual time=0.034..15.641 rows=38601.00 loops=1)
+              Group Key: customer_id
+              Buffers: shared hit=66 read=514
+              ->  Index Only Scan using idx_bookings_cust_conf on bookings  (cost=0.42..4086.38 rows=133464 width=10) (actual time=0.026..4.983 rows=133568.00 loops=1)
+                    Heap Fetches: 115
+                    Index Searches: 1
+                    Buffers: shared hit=66 read=514
+Planning:
+  Buffers: shared hit=304
+Planning Time: 0.448 ms
+Execution Time: 17.494 ms
+=== R21 run 2 ===
+Limit  (cost=6410.52..6410.57 rows=20 width=44) (actual time=16.389..16.390 rows=20.00 loops=1)
+  Buffers: shared hit=586
+  ->  Sort  (cost=6410.52..6495.10 rows=33832 width=44) (actual time=16.388..16.389 rows=20.00 loops=1)
+        Sort Key: (count(*)) DESC, (sum(total_amount)) DESC
+        Sort Method: top-N heapsort  Memory: 27kB
+        Buffers: shared hit=586
+        ->  GroupAggregate  (cost=0.42..5510.26 rows=33832 width=44) (actual time=0.016..14.713 rows=38601.00 loops=1)
+              Group Key: customer_id
+              Buffers: shared hit=580
+              ->  Index Only Scan using idx_bookings_cust_conf on bookings  (cost=0.42..4086.38 rows=133464 width=10) (actual time=0.008..4.427 rows=133568.00 loops=1)
+                    Heap Fetches: 115
+                    Index Searches: 1
+                    Buffers: shared hit=580
+Planning:
+  Buffers: shared hit=304
+Planning Time: 0.430 ms
+Execution Time: 16.416 ms
+=== R21 run 3 ===
+Limit  (cost=6410.52..6410.57 rows=20 width=44) (actual time=22.169..22.171 rows=20.00 loops=1)
+  Buffers: shared hit=586
+  ->  Sort  (cost=6410.52..6495.10 rows=33832 width=44) (actual time=22.169..22.170 rows=20.00 loops=1)
+        Sort Key: (count(*)) DESC, (sum(total_amount)) DESC
+        Sort Method: top-N heapsort  Memory: 27kB
+        Buffers: shared hit=586
+        ->  GroupAggregate  (cost=0.42..5510.26 rows=33832 width=44) (actual time=0.038..19.958 rows=38601.00 loops=1)
+              Group Key: customer_id
+              Buffers: shared hit=580
+              ->  Index Only Scan using idx_bookings_cust_conf on bookings  (cost=0.42..4086.38 rows=133464 width=10) (actual time=0.007..6.084 rows=133568.00 loops=1)
+                    Heap Fetches: 115
+                    Index Searches: 1
+                    Buffers: shared hit=580
+Planning:
+  Buffers: shared hit=304
+Planning Time: 0.762 ms
+Execution Time: 22.199 ms

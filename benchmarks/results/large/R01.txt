@@ -1,0 +1,129 @@
+=== R01 run 1 ===
+Sort  (cost=105.25..105.87 rows=248 width=38) (actual time=0.357..0.359 rows=93.00 loops=1)
+  Sort Key: (count(*)) DESC
+  Sort Method: quicksort  Memory: 30kB
+  Buffers: shared hit=153 read=5
+  ->  HashAggregate  (cost=92.91..95.39 rows=248 width=38) (actual time=0.335..0.342 rows=93.00 loops=1)
+        Group Key: m.movie_id
+        Batches: 1  Memory Usage: 48kB
+        Buffers: shared hit=150 read=5
+        ->  Hash Join  (cost=25.26..91.67 rows=248 width=30) (actual time=0.140..0.313 rows=249.00 loops=1)
+              Hash Cond: (s.movie_id = m.movie_id)
+              Buffers: shared hit=150 read=5
+              ->  Hash Join  (cost=15.51..81.26 rows=248 width=4) (actual time=0.080..0.233 rows=249.00 loops=1)
+                    Hash Cond: (s.screen_id = sc.screen_id)
+                    Buffers: shared hit=147 read=5
+                    ->  Index Scan using idx_shows_starts_at on shows s  (cost=0.29..57.64 rows=1579 width=8) (actual time=0.009..0.106 rows=1633.00 loops=1)
+                          Index Cond: ((starts_at >= '2026-07-02 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-03 00:00:00+05:30'::timestamp with time zone))
+                          Index Searches: 1
+                          Buffers: shared hit=143 read=3
+                    ->  Hash  (cost=14.26..14.26 rows=77 width=4) (actual time=0.066..0.066 rows=75.00 loops=1)
+                          Buckets: 1024  Batches: 1  Memory Usage: 11kB
+                          Buffers: shared hit=4 read=2
+                          ->  Hash Join  (cost=4.03..14.26 rows=77 width=4) (actual time=0.032..0.062 rows=75.00 loops=1)
+                                Hash Cond: (sc.venue_id = v.venue_id)
+                                Buffers: shared hit=4 read=2
+                                ->  Seq Scan on screens sc  (cost=0.00..8.90 rows=490 width=8) (actual time=0.019..0.034 rows=490.00 loops=1)
+                                      Buffers: shared hit=2 read=2
+                                ->  Hash  (cost=3.75..3.75 rows=22 width=4) (actual time=0.008..0.009 rows=22.00 loops=1)
+                                      Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                                      Buffers: shared hit=2
+                                      ->  Seq Scan on venues v  (cost=0.00..3.75 rows=22 width=4) (actual time=0.002..0.006 rows=22.00 loops=1)
+                                            Filter: (city_id = 1)
+                                            Rows Removed by Filter: 118
+                                            Buffers: shared hit=2
+              ->  Hash  (cost=6.00..6.00 rows=300 width=30) (actual time=0.056..0.056 rows=300.00 loops=1)
+                    Buckets: 1024  Batches: 1  Memory Usage: 27kB
+                    Buffers: shared hit=3
+                    ->  Seq Scan on movies m  (cost=0.00..6.00 rows=300 width=30) (actual time=0.003..0.015 rows=300.00 loops=1)
+                          Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=362 read=30
+Planning Time: 2.104 ms
+Execution Time: 4.218 ms
+=== R01 run 2 ===
+Sort  (cost=105.25..105.87 rows=248 width=38) (actual time=0.521..0.526 rows=93.00 loops=1)
+  Sort Key: (count(*)) DESC
+  Sort Method: quicksort  Memory: 30kB
+  Buffers: shared hit=158
+  ->  HashAggregate  (cost=92.91..95.39 rows=248 width=38) (actual time=0.483..0.498 rows=93.00 loops=1)
+        Group Key: m.movie_id
+        Batches: 1  Memory Usage: 48kB
+        Buffers: shared hit=155
+        ->  Hash Join  (cost=25.26..91.67 rows=248 width=30) (actual time=0.099..0.439 rows=249.00 loops=1)
+              Hash Cond: (s.movie_id = m.movie_id)
+              Buffers: shared hit=155
+              ->  Hash Join  (cost=15.51..81.26 rows=248 width=4) (actual time=0.057..0.354 rows=249.00 loops=1)
+                    Hash Cond: (s.screen_id = sc.screen_id)
+                    Buffers: shared hit=152
+                    ->  Index Scan using idx_shows_starts_at on shows s  (cost=0.29..57.64 rows=1579 width=8) (actual time=0.005..0.182 rows=1633.00 loops=1)
+                          Index Cond: ((starts_at >= '2026-07-02 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-03 00:00:00+05:30'::timestamp with time zone))
+                          Index Searches: 1
+                          Buffers: shared hit=146
+                    ->  Hash  (cost=14.26..14.26 rows=77 width=4) (actual time=0.047..0.047 rows=75.00 loops=1)
+                          Buckets: 1024  Batches: 1  Memory Usage: 11kB
+                          Buffers: shared hit=6
+                          ->  Hash Join  (cost=4.03..14.26 rows=77 width=4) (actual time=0.015..0.043 rows=75.00 loops=1)
+                                Hash Cond: (sc.venue_id = v.venue_id)
+                                Buffers: shared hit=6
+                                ->  Seq Scan on screens sc  (cost=0.00..8.90 rows=490 width=8) (actual time=0.003..0.015 rows=490.00 loops=1)
+                                      Buffers: shared hit=4
+                                ->  Hash  (cost=3.75..3.75 rows=22 width=4) (actual time=0.008..0.008 rows=22.00 loops=1)
+                                      Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                                      Buffers: shared hit=2
+                                      ->  Seq Scan on venues v  (cost=0.00..3.75 rows=22 width=4) (actual time=0.002..0.006 rows=22.00 loops=1)
+                                            Filter: (city_id = 1)
+                                            Rows Removed by Filter: 118
+                                            Buffers: shared hit=2
+              ->  Hash  (cost=6.00..6.00 rows=300 width=30) (actual time=0.039..0.039 rows=300.00 loops=1)
+                    Buckets: 1024  Batches: 1  Memory Usage: 27kB
+                    Buffers: shared hit=3
+                    ->  Seq Scan on movies m  (cost=0.00..6.00 rows=300 width=30) (actual time=0.003..0.015 rows=300.00 loops=1)
+                          Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=397
+Planning Time: 0.768 ms
+Execution Time: 4.650 ms
+=== R01 run 3 ===
+Sort  (cost=105.25..105.87 rows=248 width=38) (actual time=0.388..0.390 rows=93.00 loops=1)
+  Sort Key: (count(*)) DESC
+  Sort Method: quicksort  Memory: 30kB
+  Buffers: shared hit=158
+  ->  HashAggregate  (cost=92.91..95.39 rows=248 width=38) (actual time=0.366..0.373 rows=93.00 loops=1)
+        Group Key: m.movie_id
+        Batches: 1  Memory Usage: 48kB
+        Buffers: shared hit=155
+        ->  Hash Join  (cost=25.26..91.67 rows=248 width=30) (actual time=0.125..0.336 rows=249.00 loops=1)
+              Hash Cond: (s.movie_id = m.movie_id)
+              Buffers: shared hit=155
+              ->  Hash Join  (cost=15.51..81.26 rows=248 width=4) (actual time=0.082..0.267 rows=249.00 loops=1)
+                    Hash Cond: (s.screen_id = sc.screen_id)
+                    Buffers: shared hit=152
+                    ->  Index Scan using idx_shows_starts_at on shows s  (cost=0.29..57.64 rows=1579 width=8) (actual time=0.005..0.120 rows=1633.00 loops=1)
+                          Index Cond: ((starts_at >= '2026-07-02 00:00:00+05:30'::timestamp with time zone) AND (starts_at < '2026-07-03 00:00:00+05:30'::timestamp with time zone))
+                          Index Searches: 1
+                          Buffers: shared hit=146
+                    ->  Hash  (cost=14.26..14.26 rows=77 width=4) (actual time=0.071..0.071 rows=75.00 loops=1)
+                          Buckets: 1024  Batches: 1  Memory Usage: 11kB
+                          Buffers: shared hit=6
+                          ->  Hash Join  (cost=4.03..14.26 rows=77 width=4) (actual time=0.014..0.065 rows=75.00 loops=1)
+                                Hash Cond: (sc.venue_id = v.venue_id)
+                                Buffers: shared hit=6
+                                ->  Seq Scan on screens sc  (cost=0.00..8.90 rows=490 width=8) (actual time=0.003..0.024 rows=490.00 loops=1)
+                                      Buffers: shared hit=4
+                                ->  Hash  (cost=3.75..3.75 rows=22 width=4) (actual time=0.007..0.007 rows=22.00 loops=1)
+                                      Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                                      Buffers: shared hit=2
+                                      ->  Seq Scan on venues v  (cost=0.00..3.75 rows=22 width=4) (actual time=0.002..0.005 rows=22.00 loops=1)
+                                            Filter: (city_id = 1)
+                                            Rows Removed by Filter: 118
+                                            Buffers: shared hit=2
+              ->  Hash  (cost=6.00..6.00 rows=300 width=30) (actual time=0.039..0.039 rows=300.00 loops=1)
+                    Buckets: 1024  Batches: 1  Memory Usage: 27kB
+                    Buffers: shared hit=3
+                    ->  Seq Scan on movies m  (cost=0.00..6.00 rows=300 width=30) (actual time=0.003..0.015 rows=300.00 loops=1)
+                          Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=397
+Planning Time: 0.731 ms
+Execution Time: 5.595 ms

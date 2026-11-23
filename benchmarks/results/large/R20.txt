@@ -1,0 +1,81 @@
+=== R20 run 1 ===
+WindowAgg  (cost=8643.00..9350.90 rows=40452 width=68) (actual time=12.039..12.046 rows=30.00 loops=1)
+  Window: w1 AS (ORDER BY ((bookings.booked_at)::date))
+  Storage: Memory  Maximum Storage: 17kB
+  Buffers: shared hit=2196 read=210
+  ->  Sort  (cost=8642.99..8744.12 rows=40452 width=36) (actual time=12.032..12.033 rows=30.00 loops=1)
+        Sort Key: ((bookings.booked_at)::date)
+        Sort Method: quicksort  Memory: 25kB
+        Buffers: shared hit=2196 read=210
+        ->  HashAggregate  (cost=4940.83..5547.61 rows=40452 width=36) (actual time=11.964..12.022 rows=30.00 loops=1)
+              Group Key: (bookings.booked_at)::date
+              Batches: 1  Memory Usage: 553kB
+              Buffers: shared hit=2193 read=210
+              ->  Bitmap Heap Scan on bookings  (cost=1418.91..4696.19 rows=48929 width=10) (actual time=1.704..9.174 rows=48926.00 loops=1)
+                    Recheck Cond: ((booked_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (booked_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+                    Filter: ((status)::text = 'CONFIRMED'::text)
+                    Rows Removed by Filter: 6014
+                    Heap Blocks: exact=2190
+                    Buffers: shared hit=2193 read=210
+                    ->  Bitmap Index Scan on idx_bookings_booked_at_desc  (cost=0.00..1406.68 rows=55026 width=0) (actual time=1.569..1.569 rows=54940.00 loops=1)
+                          Index Cond: ((booked_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (booked_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+                          Index Searches: 1
+                          Buffers: shared hit=3 read=210
+Planning:
+  Buffers: shared hit=296 read=2
+Planning Time: 0.837 ms
+Execution Time: 254.800 ms
+=== R20 run 2 ===
+WindowAgg  (cost=8643.00..9350.90 rows=40452 width=68) (actual time=11.426..11.433 rows=30.00 loops=1)
+  Window: w1 AS (ORDER BY ((bookings.booked_at)::date))
+  Storage: Memory  Maximum Storage: 17kB
+  Buffers: shared hit=2406
+  ->  Sort  (cost=8642.99..8744.12 rows=40452 width=36) (actual time=11.417..11.418 rows=30.00 loops=1)
+        Sort Key: ((bookings.booked_at)::date)
+        Sort Method: quicksort  Memory: 25kB
+        Buffers: shared hit=2406
+        ->  HashAggregate  (cost=4940.83..5547.61 rows=40452 width=36) (actual time=11.351..11.408 rows=30.00 loops=1)
+              Group Key: (bookings.booked_at)::date
+              Batches: 1  Memory Usage: 553kB
+              Buffers: shared hit=2403
+              ->  Bitmap Heap Scan on bookings  (cost=1418.91..4696.19 rows=48929 width=10) (actual time=1.389..8.659 rows=48926.00 loops=1)
+                    Recheck Cond: ((booked_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (booked_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+                    Filter: ((status)::text = 'CONFIRMED'::text)
+                    Rows Removed by Filter: 6014
+                    Heap Blocks: exact=2190
+                    Buffers: shared hit=2403
+                    ->  Bitmap Index Scan on idx_bookings_booked_at_desc  (cost=0.00..1406.68 rows=55026 width=0) (actual time=1.267..1.267 rows=54940.00 loops=1)
+                          Index Cond: ((booked_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (booked_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+                          Index Searches: 1
+                          Buffers: shared hit=213
+Planning:
+  Buffers: shared hit=298
+Planning Time: 0.414 ms
+Execution Time: 261.200 ms
+=== R20 run 3 ===
+WindowAgg  (cost=8643.00..9350.90 rows=40452 width=68) (actual time=11.291..11.298 rows=30.00 loops=1)
+  Window: w1 AS (ORDER BY ((bookings.booked_at)::date))
+  Storage: Memory  Maximum Storage: 17kB
+  Buffers: shared hit=2406
+  ->  Sort  (cost=8642.99..8744.12 rows=40452 width=36) (actual time=11.284..11.285 rows=30.00 loops=1)
+        Sort Key: ((bookings.booked_at)::date)
+        Sort Method: quicksort  Memory: 25kB
+        Buffers: shared hit=2406
+        ->  HashAggregate  (cost=4940.83..5547.61 rows=40452 width=36) (actual time=11.217..11.275 rows=30.00 loops=1)
+              Group Key: (bookings.booked_at)::date
+              Batches: 1  Memory Usage: 553kB
+              Buffers: shared hit=2403
+              ->  Bitmap Heap Scan on bookings  (cost=1418.91..4696.19 rows=48929 width=10) (actual time=1.287..8.505 rows=48926.00 loops=1)
+                    Recheck Cond: ((booked_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (booked_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+                    Filter: ((status)::text = 'CONFIRMED'::text)
+                    Rows Removed by Filter: 6014
+                    Heap Blocks: exact=2190
+                    Buffers: shared hit=2403
+                    ->  Bitmap Index Scan on idx_bookings_booked_at_desc  (cost=0.00..1406.68 rows=55026 width=0) (actual time=1.167..1.167 rows=54940.00 loops=1)
+                          Index Cond: ((booked_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (booked_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+                          Index Searches: 1
+                          Buffers: shared hit=213
+Planning:
+  Buffers: shared hit=298
+Planning Time: 0.419 ms
+Execution Time: 280.200 ms

@@ -1,0 +1,42 @@
+=== R13 run 1 ===
+Nested Loop Anti Join  (cost=0.29..9.69 rows=7 width=31) (actual time=0.044..0.108 rows=7.00 loops=1)
+  Buffers: shared hit=32 read=20
+  ->  Seq Scan on offers o  (cost=0.00..1.25 rows=25 width=31) (actual time=0.003..0.004 rows=25.00 loops=1)
+        Buffers: shared hit=1
+  ->  Index Only Scan using idx_bookings_offer_code on bookings b  (cost=0.29..26.32 rows=1250 width=10) (actual time=0.004..0.004 rows=0.72 loops=25)
+        Index Cond: (offer_code = (o.offer_code)::text)
+        Heap Fetches: 0
+        Index Searches: 25
+        Buffers: shared hit=31 read=20
+Planning:
+  Buffers: shared hit=344 read=3
+Planning Time: 0.725 ms
+Execution Time: 0.128 ms
+=== R13 run 2 ===
+Nested Loop Anti Join  (cost=0.29..9.69 rows=7 width=31) (actual time=0.034..0.079 rows=7.00 loops=1)
+  Buffers: shared hit=52
+  ->  Seq Scan on offers o  (cost=0.00..1.25 rows=25 width=31) (actual time=0.002..0.003 rows=25.00 loops=1)
+        Buffers: shared hit=1
+  ->  Index Only Scan using idx_bookings_offer_code on bookings b  (cost=0.29..26.32 rows=1250 width=10) (actual time=0.003..0.003 rows=0.72 loops=25)
+        Index Cond: (offer_code = (o.offer_code)::text)
+        Heap Fetches: 0
+        Index Searches: 25
+        Buffers: shared hit=51
+Planning:
+  Buffers: shared hit=347
+Planning Time: 0.486 ms
+Execution Time: 0.097 ms
+=== R13 run 3 ===
+Nested Loop Anti Join  (cost=0.29..9.69 rows=7 width=31) (actual time=0.035..0.082 rows=7.00 loops=1)
+  Buffers: shared hit=52
+  ->  Seq Scan on offers o  (cost=0.00..1.25 rows=25 width=31) (actual time=0.003..0.004 rows=25.00 loops=1)
+        Buffers: shared hit=1
+  ->  Index Only Scan using idx_bookings_offer_code on bookings b  (cost=0.29..26.32 rows=1250 width=10) (actual time=0.003..0.003 rows=0.72 loops=25)
+        Index Cond: (offer_code = (o.offer_code)::text)
+        Heap Fetches: 0
+        Index Searches: 25
+        Buffers: shared hit=51
+Planning:
+  Buffers: shared hit=347
+Planning Time: 0.482 ms
+Execution Time: 0.100 ms
